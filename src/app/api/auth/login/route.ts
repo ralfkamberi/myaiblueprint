@@ -1,0 +1,24 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createToken } from "@/lib/auth";
+import { cookies } from "next/headers";
+
+export async function POST(request: NextRequest) {
+  const { password } = await request.json();
+  const adminPassword = process.env.ADMIN_PASSWORD || "changeme123";
+
+  if (password !== adminPassword) {
+    return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+  }
+
+  const token = createToken();
+  const cookieStore = await cookies();
+  cookieStore.set("admin_token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: "/",
+  });
+
+  return NextResponse.json({ success: true });
+}

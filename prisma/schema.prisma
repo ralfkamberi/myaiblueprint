@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String   @default("")
+  content     String
+  coverImage  String   @default("")
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  category    String   @default("writing")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String
+  content     String
+  coverImage  String   @default("")
+  demoUrl     String   @default("")
+  tags        String   @default("")
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SiteSettings {
+  id              String @id @default("main")
+  chatbotApiKey   String @default("")
+  chatbotPrompt   String @default("You are a helpful assistant for the MyAIBlueprint website. Answer questions about the site owner and their work.")
+  aboutContent    String @default("")
+  socialTwitter   String @default("")
+  socialGithub    String @default("")
+  socialLinkedin  String @default("")
+  socialEmail     String @default("")
+}
